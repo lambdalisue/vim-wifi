@@ -1,6 +1,6 @@
+" Ref: https://raw.githubusercontent.com/b4b4r07/dotfiles/master/bin/wifi
+let s:t_funcref = type(function('tr'))
 
-" airport -------------------------------------------------------------
-" ref: https://raw.githubusercontent.com/b4b4r07/dotfiles/master/bin/wifi
 let s:airport = {
       \ 'job': 0,
       \ 'data': [],
@@ -40,6 +40,9 @@ function! s:airport.on_exit(...) abort
   let self.rssi = str2nr(matchstr(content, '\<agrCtlRSSI: \zs.\+$'))
   let self.rate = str2nr(matchstr(content, '\<lastTxRate: \zs.\+$'))
   let self.ssid = matchstr(content, '\<SSID: \zs\w\+')
+  if type(self.callback) == s:t_funcref
+    call self.callback()
+  endif
 endfunction
 
 
