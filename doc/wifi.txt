@@ -32,7 +32,7 @@ https://github.com/b4b4r07/dotfiles/blob/master/bin/wifi.
 =============================================================================
 USAGE						*wifi-usage*
 
-Use *wifi#component()* like:
+Use |wifi#component()| like:
 >
 	set statusline=...%{wifi#component()}...
 	set tabline=...%{wifi#component()}...
