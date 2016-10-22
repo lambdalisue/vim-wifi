@@ -1,0 +1,177 @@
+*wifi.txt*	A statusline/tabline component of Wifi connection
+
+Version: 0.1.0
+Author:  Alisue <lambdalisue@hashnote.net>
+Support: Neovim 0.1.6 or above
+Support: Vim 8.0 or above
+License: MIT license
+
+=============================================================================
+CONTENTS					*wifi-contents*
+
+Introduction			|wifi-introduction|
+Usage				|wifi-usage|
+Interface			|wifi-interface|
+  Functions			|wifi-functions|
+  Variables			|wifi-variables|
+
+
+=============================================================================
+INTRODUCTION					*wifi-introduction*
+
+*wifi.vim* is a |statusline| or |tabline| component for Neovim/Vim.
+It uses a job feature of Neovim/Vim to retrieve wifi informations so that the
+plugin won't block the main thread.
+
+NOTE: Only for Mac OS X. PR is welcom.
+
+The implementation was translated to Vim script from a Bash script found on
+https://github.com/b4b4r07/dotfiles/blob/master/bin/wifi.
+
+
+=============================================================================
+USAGE						*wifi-usage*
+
+Use *wifi#component()* like:
+>
+	set statusline=...%{wifi#component()}...
+	set tabline=...%{wifi#component()}...
+<
+Or with itchyny/lightline.vim
+>
+	let g:lightline = {
+	      \ ...
+	      \ 'component_function': {
+	      \   ...
+	      \   'wifi': 'wifi#component',
+	      \   ...
+	      \ },
+	      \ ...
+	      \}
+<
+Additionally, assign 1 to corresponding variables to immediately reflect the
+changes to |statusline| or |tabline|.
+>
+	let g:wifi#update_tabline = 1    " For tabline.
+	let g:wifi#update_statusline = 1 " For statusline.
+<
+=============================================================================
+INTERFACE					*wifi-interface*
+
+-----------------------------------------------------------------------------
+FUNCTIONS					*wifi-functions*
+
+					*wifi#backend()*
+wifi#backend()
+	Return a wifi backend specified by |g:wifi#backend|.
+
+					*wifi#update()*
+wifi#update()
+	Call external program if no update process is executed and update the
+	internal information.
+	It is automatically called every |g:wifi#update_interval| milliseconds
+	when |wifi#watch()| has called.
+
+					*wifi#rssi()*
+wifi#rssi()
+	Return a RSSI (Received Signal Strength Indicator).
+	Note that the value is a cached value from |wifi#update()|.
+
+					*wifi#rate()*
+wifi#rate()
+	Return a connection rate in Mbps.
+	Note that the value is a cached value from |wifi#update()|.
+
+					*wifi#ssid()*
+wifi#ssid()
+	Return a SSID.
+	Note that the value is a cached value from |wifi#update()|.
+
+					*wifi#graph()*
+wifi#graph()
+	Return a unicode graph indicating the RSSI which looks like "▂▅▇".
+	Note that the graph is built from a cached value from |wifi#update()|.
+
+	RSSI		Graph~
+	> -50		▂▅▇
+	> -80		▂▅
+	> -100		▂
+
+					*wifi#watch()*
+wifi#watch()
+	Start a timer to call |wifi#update()| if there is no timer.
+	Users can control the interval by |g:wifi#update_interval|.
+	Note that this function is automatically called on startup when
+	|g:wifi_watch_on_startup| is specified.
+
+					*wifi#unwatch()*
+wifi#unwatch()
+	Stop an existing timer. Do nothing if there is no timer.
+
+					*wifi#component()*
+wifi#component()
+	Return a wifi component for |statusline| or |tabline| which looks
+	like "Freewifi 54 Mbps ▂▅ ".
+	Users can customize the format by |g:wifi#component_format|.
+
+-----------------------------------------------------------------------------
+VARIABLES					*wifi-variables*
+
+					*g:wifi_watch_on_startup*
+g:wifi_watch_on_startup
+	1 to automatically call |wifi#watch()| on startup.
+	Default is 1
+
+					*g:wifi#backend*
+g:wifi#backend
+	A backend used to retrieve the wifi information.
+	It is automatically determined if user has not explicitly specified.
+	Currently the following backends are available.
+
+	Name		Description~
+	dummy		A dummy backend which does nothing
+	airport		For Mac OS X
+
+					*g:wifi#update_interval*
+g:wifi#update_interval
+	A millisecond interval used to update the wifi information when
+	|wifi#watch| has called.
+	Use smaller value when you prefer to reflect the current wifi status
+	immediately.
+	Default is 30000.
+
+					*g:wifi#update_tabline*
+g:wifi#update_tabline
+	1 to update tabline when the wifi information has retrieved.
+	It is required to immediately update your tabline whenever the wifi
+	information has retrieved.
+	Users should not enable this option unless the |wifi#component()| is
+	used in |tabline|.
+	Default is 0.
+
+					*g:wifi#update_statusline*
+g:wifi#update_statusline
+	1 to update statusline when the wifi information has retrieved.
+	It is required to immediately update your statusline whenever the
+	wifi information has retrieved.
+	Users should not enable this option unless the |wifi#component()| is
+	used in |statusline|.
+	Default is 0.
+
+					*g:wifi#component_format*
+g:wifi#component_format
+	A string format used in |wifi#component()|.
+
+	Character	Represent~
+	%s		A SSID
+	%r		A connection rate
+	%i		A RSSI
+	%g		A graph
+	%x		x
+	%%		%
+
+	Default is "%s %r Mbs %g"
+
+
+=============================================================================
+vim:tw=78:fo=tcq2mM:ts=8:ft=help:norl
