@@ -107,5 +107,5 @@ call s:define('g:wifi', {
       \ 'update_interval': 30000,
       \ 'update_tabline': 0,
       \ 'update_statusline': 0,
-      \ 'component_format': '%s %r Mbs %b',
+      \ 'component_format': '%s %r Mbs %g',
       \})
