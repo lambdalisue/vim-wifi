@@ -39,7 +39,7 @@ function! s:airport.on_exit(...) abort
   let self.data = []
   let self.rssi = str2nr(matchstr(content, '\<agrCtlRSSI: \zs.\+$'))
   let self.rate = str2nr(matchstr(content, '\<lastTxRate: \zs.\+$'))
-  let self.ssid = matchstr(content, '\<SSID: \zs\w\+')
+  let self.ssid = matchstr(content, '\<SSID: \zs[^\r\n]\+')
   if type(self.callback) == s:t_funcref
     call self.callback()
   endif
