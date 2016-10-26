@@ -88,7 +88,7 @@ function! s:get_available_backend() abort
   if has('mac')
     return 'airport'
   endif
-  return ''
+  return 'dummy'
 endfunction
 
 function! s:define(prefix, default) abort
