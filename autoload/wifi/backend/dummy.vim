@@ -1,6 +1,5 @@
 let s:dummy = {
       \ 'job': 0,
-      \ 'data': [],
       \ 'rssi': -100,
       \ 'rate': 0,
       \ 'ssid': '',
