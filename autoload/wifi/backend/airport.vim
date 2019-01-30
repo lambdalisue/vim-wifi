@@ -1,51 +1,39 @@
 " Ref: https://raw.githubusercontent.com/b4b4r07/dotfiles/master/bin/wifi
-let s:t_funcref = type(function('tr'))
+let s:Job = vital#wifi#import('System.Job')
+let s:EXE = '/System/Library/PrivateFrameworks/Apple80211.framework/Versions/Current/Resources/airport'
 
-let s:airport = {
-      \ 'job': 0,
-      \ 'data': [],
-      \ 'rssi': -100,
-      \ 'rate': 0,
-      \ 'ssid': '',
-      \ 'callback': 0,
-      \}
-let s:airport.executable = join([
-      \ '/System',
-      \ '/Library',
-      \ '/PrivateFrameworks',
-      \ '/Apple80211.framework',
-      \ '/Versions',
-      \ '/Current',
-      \ '/Resources',
-      \ '/airport',
-      \], '')
-
-function! s:airport.update() abort
-  if wifi#job#is_alive(self.job)
+function! s:update() abort dict
+  if type(self.job) is# v:t_dict && self.job.status() ==# 'run'
     return
   endif
-  let self.job = wifi#job#start(
-        \ self.executable . ' --getinfo',
-        \ self
-        \)
+  let buffer = ['']
+  let self.job = s:Job.start([s:EXE, '--getinfo'], {
+        \ 'on_stdout': funcref('s:on_stdout', [buffer]),
+        \ 'on_exit': funcref('s:on_exit', [buffer], self),
+        \})
 endfunction
 
-function! s:airport.on_stdout(job, data, event) abort
-  call extend(self.data, a:data)
+function! s:on_stdout(buffer, data) abort
+  call extend(a:buffer, a:data)
 endfunction
 
-function! s:airport.on_exit(...) abort
-  let content = join(self.data, "\n")
-  let self.data = []
+function! s:on_exit(buffer, exitval) abort dict
+  let content = join(a:buffer, "\n")
   let self.rssi = str2nr(matchstr(content, '\<agrCtlRSSI: \zs.\+$'))
   let self.rate = str2nr(matchstr(content, '\<lastTxRate: \zs.\+$'))
   let self.ssid = matchstr(content, '\<SSID: \zs[^\r\n]\+')
-  if type(self.callback) == s:t_funcref
+  if type(self.callback) is# v:t_func
     call self.callback()
   endif
 endfunction
 
-
 function! wifi#backend#airport#define() abort
-  return s:airport
+  return {
+        \ 'job': 0,
+        \ 'rssi': -100,
+        \ 'rate': 0,
+        \ 'ssid': '',
+        \ 'callback': 0,
+        \ 'update': funcref('s:update'),
+        \}
 endfunction
