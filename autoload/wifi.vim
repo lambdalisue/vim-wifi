@@ -87,6 +87,8 @@ endfunction
 function! s:get_available_backend() abort
   if has('mac')
     return 'airport'
+  elseif executable('powershell.exe')
+    return 'powershell'
   endif
   return 'dummy'
 endfunction
