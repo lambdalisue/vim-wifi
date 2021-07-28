@@ -87,6 +87,8 @@ endfunction
 function! s:get_available_backend() abort
   if has('mac')
     return 'airport'
+  elseif wifi#backend#linux#is_available()
+    return 'linux'
   elseif wifi#backend#termux#is_available()
     return 'termux'
   endif
