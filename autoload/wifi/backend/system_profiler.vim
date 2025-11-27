@@ -44,7 +44,10 @@ function! s:on_exit(buffer, exitval) abort dict
   " Extract SSID from Current Network Information section
   " The SSID appears as the network name (indented) before PHY Mode
   " Note: macOS 14+ shows '<redacted>' due to Location Services requirement
-  let current_network_section = matchstr(content, 'Current Network Information:\_.\{-}\n\s\+\zs\S\+\ze:\_.\{-}PHY Mode:')
+  " Use [^:]+ to match SSIDs with spaces (not just \S+ which excludes spaces)
+  let current_network_section = matchstr(content, 'Current Network Information:\_.\{-}\n\s\+\zs[^:]\+\ze:\_.\{-}PHY Mode:')
+  " Trim trailing whitespace from SSID
+  let current_network_section = substitute(current_network_section, '\s\+$', '', '')
   if empty(current_network_section) || current_network_section ==# '<redacted>'
     let self.ssid = ''
   else
