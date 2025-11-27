@@ -27,6 +27,11 @@ function! s:on_exit(buffer, exitval) abort dict
   endif
 endfunction
 
+function! wifi#backend#airport#is_available() abort
+  " Check if the airport command is available (older macOS)
+  return executable(s:EXE)
+endfunction
+
 function! wifi#backend#airport#define() abort
   return {
         \ 'job': 0,

@@ -23,7 +23,7 @@ INTRODUCTION					*wifi-introduction*
 It uses a job feature of Neovim/Vim to retrieve wifi informations so that the
 plugin won't block the main thread.
 
-NOTE: Only for Mac OS X. PR is welcom.
+NOTE: Supports macOS, Linux, and Termux. PR is welcome.
 
 The implementation was translated to Vim script from a Bash script found on
 https://github.com/b4b4r07/dotfiles/blob/master/bin/wifi.
@@ -130,7 +130,10 @@ g:wifi#backend
 
 	Name		Description~
 	dummy		A dummy backend which does nothing
-	airport		For Mac OS X
+	airport		For older macOS (uses airport command)
+	system_profiler	For modern macOS 15+ (uses system_profiler)
+	linux		For Linux (uses iw command)
+	termux		For Termux on Android (uses termux-wifi-connectioninfo)
 
 					*g:wifi#update_interval*
 g:wifi#update_interval

@@ -11,7 +11,7 @@ wifi.vim
 *wifi.vim* is a statusline/tabline component for Neovim/Vim.
 It uses a job feature of Neovim/Vim to retrieve wifi informations so that the plugin won't block the main thread.
 
-**NOTE: Only for Mac OS X. PR is welcom.**
+**NOTE: Supports macOS, Linux, and Termux. PR is welcome.**
 
 The implementation was translated to Vim script from a Bash script found on https://github.com/b4b4r07/dotfiles/blob/master/bin/wifi.
 
