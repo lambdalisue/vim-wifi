@@ -86,7 +86,12 @@ endfunction
 
 function! s:get_available_backend() abort
   if has('mac')
-    return 'airport'
+    " Try airport first (for older macOS), then system_profiler (for modern macOS)
+    if wifi#backend#airport#is_available()
+      return 'airport'
+    elseif wifi#backend#system_profiler#is_available()
+      return 'system_profiler'
+    endif
   elseif wifi#backend#linux#is_available()
     return 'linux'
   elseif wifi#backend#termux#is_available()
