@@ -13,6 +13,22 @@ It uses a job feature of Neovim/Vim to retrieve wifi informations so that the pl
 
 **NOTE: Supports macOS, Linux, and Termux. PR is welcome.**
 
+> [!IMPORTANT]
+> **macOS 14+ SSID Limitation**: Due to Apple's privacy changes introduced in macOS 14 (Sonoma), WiFi SSID access now requires Location Services permission. **CLI tools (including Vim/Neovim and terminal emulators) cannot request this permission**, so SSID will not be available on modern macOS.
+>
+> **What still works:**
+> - ✅ RSSI (signal strength)
+> - ✅ Transmission rate
+> - ✅ Signal graph
+>
+> **What doesn't work on macOS 14+:**
+> - ❌ SSID (network name) - will be empty
+>
+> This is an **intentional Apple design decision**, not a bug. For technical details, see:
+> - [Apple Developer Forums: macOS get SSID changes?](https://developer.apple.com/forums/thread/732431)
+> - Official requirement: _"SSID information is not available unless Location Services is enabled and the user has authorized the calling app to use location services."_
+> - CLI tools have no mechanism to request Location Services authorization
+
 The implementation was translated to Vim script from a Bash script found on https://github.com/b4b4r07/dotfiles/blob/master/bin/wifi.
 
 

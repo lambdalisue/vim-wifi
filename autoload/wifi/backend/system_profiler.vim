@@ -1,5 +1,13 @@
 " Backend for modern macOS (macOS 15+) using system_profiler
 " This backend is used when the airport command is not available
+"
+" Note: Due to macOS privacy changes introduced in macOS 14 (Sonoma),
+" SSID access requires Location Services permission. CLI tools cannot
+" request this permission, so SSID will always be unavailable.
+" See: https://developer.apple.com/forums/thread/732431
+"
+" RSSI and transmission rate are still available as they are not
+" considered privacy-sensitive information.
 let s:Job = vital#wifi#import('System.Job')
 let s:EXE = 'system_profiler'
 
@@ -35,8 +43,13 @@ function! s:on_exit(buffer, exitval) abort dict
 
   " Extract SSID from Current Network Information section
   " The SSID appears as the network name (indented) before PHY Mode
+  " Note: macOS 14+ shows '<redacted>' due to Location Services requirement
   let current_network_section = matchstr(content, 'Current Network Information:\_.\{-}\n\s\+\zs\S\+\ze:\_.\{-}PHY Mode:')
-  let self.ssid = empty(current_network_section) ? '' : current_network_section
+  if empty(current_network_section) || current_network_section ==# '<redacted>'
+    let self.ssid = ''
+  else
+    let self.ssid = current_network_section
+  endif
 
   if type(self.callback) is# v:t_func
     call self.callback()

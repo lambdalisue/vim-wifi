@@ -132,6 +132,10 @@ g:wifi#backend
 	dummy		A dummy backend which does nothing
 	airport		For older macOS (uses airport command)
 	system_profiler	For modern macOS 15+ (uses system_profiler)
+			IMPORTANT: Due to Apple's privacy changes in
+			macOS 14+, SSID is unavailable from CLI tools.
+			Only RSSI and transmission rate are available.
+			See https://developer.apple.com/forums/thread/732431
 	linux		For Linux (uses iw command)
 	termux		For Termux on Android (uses termux-wifi-connectioninfo)
 
