@@ -26,7 +26,7 @@ It uses a job feature of Neovim/Vim to retrieve wifi informations so that the pl
 >
 > This is an **intentional Apple design decision**, not a bug. For technical details, see:
 > - [Apple Developer Forums: macOS get SSID changes?](https://developer.apple.com/forums/thread/732431)
-> - Official requirement: _"SSID information is not available unless Location Services is enabled and the user has authorized the calling app to use location services."_
+> - Official requirement: *"SSID information is not available unless Location Services is enabled and the user has authorized the calling app to use location services."*
 > - CLI tools have no mechanism to request Location Services authorization
 
 The implementation was translated to Vim script from a Bash script found on https://github.com/b4b4r07/dotfiles/blob/master/bin/wifi.
